@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.tavernari.asworker.notification.NotificationCenter"/>
+    <classEntry path="com.tavernari.asworker.notification.NotificationCenterEvent"/>
+    <classEntry path="com.tavernari.asworker.ASBackWorker"/>
+    <classEntry path="com.tavernari.asworker.ASUIWorker"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
