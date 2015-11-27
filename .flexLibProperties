@@ -5,6 +5,10 @@
     <classEntry path="com.tavernari.asworker.notification.NotificationCenterEvent"/>
     <classEntry path="com.tavernari.asworker.ASBackWorker"/>
     <classEntry path="com.tavernari.asworker.ASUIWorker"/>
+    <classEntry path="com.tavernari.asworker.ASWorker"/>
+    <classEntry path="com.tavernari.asworker.WorkerToNotification"/>
+    <classEntry path="com.tavernari.asworker.notification.NotificationProtocolWrite"/>
+    <classEntry path="com.tavernari.asworker.NotificationProtocolRead"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
