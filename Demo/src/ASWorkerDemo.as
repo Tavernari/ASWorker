@@ -1,15 +1,3 @@
-# ASWorker
-
-It is an easy way to implement worker in Action Script 3.
-ASWorker is frendly API to send message between UI and Other thread.
-
-For now it work with two `Worker`, an UI worker and Back worker.
-
-## Implementation
-
-Code Example
-
-```actionscript
 package
 {
 	import com.tavernari.asworker.ASWorker;
@@ -70,8 +58,3 @@ package
 		// BACK AREA END
 	}
 }
-```
-
-#### Thanks
-
-Good work, hope help with workers
