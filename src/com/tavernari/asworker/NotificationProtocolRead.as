@@ -2,6 +2,8 @@ package com.tavernari.asworker
 {
 	import com.tavernari.asworker.notification.NotificationCenterEvent;
 	
+	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
 	import flash.utils.getDefinitionByName;
@@ -27,16 +29,29 @@ package com.tavernari.asworker
 			const type:String = getNextStringFromBA();
 			const dataClassName:String = getNextStringFromBA();
 			const dataClass:Class = registerClass(dataClassName);
-			const data:* = getData(dataClass);
+			const data:* = dataClass == BitmapData ? getBitmpData(dataClass) : getData(dataClass);
 			const event:NotificationCenterEvent = new eventClass( type );
 			event.data = data;
 			
 			return event;
 		}
 		
-		private function getData(dataClass:Class):*{
+		private function getBitmpData(dataClass:Class):*{
+			const width:Number = byteArray.readFloat();
+			const height:Number = byteArray.readFloat();
 			const dataLenght:int = byteArray.readInt();
 			
+			const dataByteArray:ByteArray = new ByteArray();
+			byteArray.readBytes(dataByteArray,0,dataLenght);
+			
+			const bmpData:BitmapData = new BitmapData(width, height);
+			bmpData.setPixels( new Rectangle(width, height), dataByteArray );
+			return bmpData;
+		}
+		
+		private function getData(dataClass:Class):*{
+			const dataLenght:int = byteArray.readInt();
+
 			const dataByteArray:ByteArray = new ByteArray();
 			byteArray.readBytes(dataByteArray,0,dataLenght);
 			return dataClass(dataByteArray.readObject())
@@ -49,8 +64,14 @@ package com.tavernari.asworker
 		
 		private function registerClass(className:String):Class{
 			const eventClass:Class = getDefinitionByName(className) as Class;
-			const eventClassString:String = className.indexOf("::") != -1 ? className.split("::")[1] : className;
-			registerClassAlias(eventClassString, eventClass);
+			if(className.indexOf("::") != -1){
+				var matches:Array = className.split("::");
+				matches.shift();
+				var eventClassString:String = matches.join("");
+				registerClassAlias(eventClassString, eventClass);
+			}else{
+				registerClassAlias(className, eventClass);
+			}
 			return eventClass;
 		}
 	}

@@ -1,6 +1,8 @@
 package com.tavernari.asworker.notification
 {
 	
+	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
 	import flash.utils.getDefinitionByName;
@@ -27,23 +29,42 @@ package com.tavernari.asworker.notification
 			wirteData();
 		}
 		
+		private function registerClass(className:String):Class{
+			const eventClass:Class = getDefinitionByName(className) as Class;
+			if(className.indexOf("::") != -1){
+				const matches:Array = className.split("::");
+				matches.shift();
+				const eventClassString:String = matches.join("");
+				registerClassAlias(eventClassString, eventClass);
+			}else{
+				registerClassAlias(className, eventClass);
+			}
+			return eventClass;
+		}
+		
 		private function wirteData():void
 		{
 			const tempBA:ByteArray = new ByteArray();
 			
 			const objectClass:String = getQualifiedClassName(event.data);
-			
-			if(objectClass.indexOf("::") != -1)
-				registerClassAlias(objectClass.split("::")[1], getDefinitionByName(objectClass) as Class );
-			else
-				registerClassAlias(objectClass, getDefinitionByName(objectClass) as Class );
-			
+			registerClass(objectClass)
 			byteArray.writeInt(objectClass.length);
 			byteArray.writeUTFBytes(objectClass);
 			
-			tempBA.writeObject( event.data );
-			byteArray.writeInt( tempBA.length );
-			byteArray.writeObject( event.data );
+			if(event.data is BitmapData){
+				
+				const bmpData:BitmapData = BitmapData(event.data);
+				byteArray.writeFloat(bmpData.width);
+				byteArray.writeFloat(bmpData.height);
+				const bmpDataBA:ByteArray = bmpData.getPixels(new Rectangle(0,0,bmpData.width, bmpData.height) ) 
+				byteArray.writeInt( bmpDataBA.length );
+				byteArray.writeBytes( bmpDataBA );
+				
+			}else{
+				tempBA.writeObject( event.data );
+				byteArray.writeInt( tempBA.length );
+				byteArray.writeBytes( tempBA );
+			}
 		}
 		
 		private function writeEventType():void
